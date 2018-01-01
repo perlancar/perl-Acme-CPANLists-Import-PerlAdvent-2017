@@ -1,0 +1,53 @@
+#!/usr/bin/env perl
+
+use 5.010;
+use strict;
+use warnings;
+use FindBin '$Bin';
+
+use App::CreateAcmeCPANListsImportModules;
+use Perinci::Sub::Util qw(gen_curried_sub);
+use Perinci::CmdLine::Any;
+
+my %add_modules = (
+    #"01" => ["Meta::Grapher::Moose"], # not linked
+);
+
+my %typos = (
+    'MooseX::LazyRequires' => 'MooseX::LazyRequire',
+    'Perl::PrereqScanner::NotSoLite' => 'Perl::PrereqScanner::NotQuiteLite',
+);
+
+gen_curried_sub(
+    'App::CreateAcmeCPANListsImportModules::create_acme_cpanlists_import_modules',
+    {
+        modules => [
+            {
+                name => '2017',
+                url => "http://perladvent.org/2017/",
+                extract_urls => [map {"http://perladvent.org/2017/2017-12-$_.html"} "01".."25"],
+                summary => 'Modules mentioned in Perl Advent Calendar 2017',
+                add_modules => [map {@$_} values %add_modules],
+            },
+            (map {
+                +{
+                    name => "2017_12_$_",
+                    url => "http://perladvent.org/2017/2017-12-$_.html",
+                    summary => "Modules mentioned in Perl Advent Calendar 2017 (day $_)",
+                    add_modules => [@{ $add_modules{$_} // [] }],
+                },
+            } "01".."24"),
+        ],
+        typos => \%typos,
+        ignore_empty => 1,
+        namespace => 'Acme::CPANLists::Import::PerlAdvent',
+        user_agent => 'Mozilla/5.0',
+        dist_dir => "$Bin/..",
+    },
+    'app',
+);
+
+Perinci::CmdLine::Any->new(
+    url => '/main/app',
+    log => 1,
+)->run;
