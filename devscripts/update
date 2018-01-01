@@ -10,7 +10,14 @@ use Perinci::Sub::Util qw(gen_curried_sub);
 use Perinci::CmdLine::Any;
 
 my %add_modules = (
-    #"01" => ["Meta::Grapher::Moose"], # not linked
+    # not linked
+    "01" => ["utf8"],
+    "02" => ["Emoji::NationalFlag"],
+    "03" => ["Test::Perl::Critic", "Perl::Critic"],
+    "11" => ["Path::Tiny"],
+    "12" => ["Devel::MAT"],
+    "13" => ["Unicode::UCD"],
+    "21" => ["DBIx::Class"],
 );
 
 my %typos = (
